@@ -50,7 +50,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Keepalived'
-copyright = u'2001-%s, Alexandre Cassen' % time.strftime('%Y')
+copyright = f"2001-{time.strftime('%Y')}, Alexandre Cassen"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -120,7 +120,7 @@ html_theme = 'sphinx_rtd_theme'
 #html_title = None
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = '%s %s User Guide' % (project, release)
+html_short_title = f'{project} {release} User Guide'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -233,7 +233,7 @@ latex_documents = [
 epub_title = u'Keepalived User Guide'
 epub_author = u'Alexandre Cassen and Contributors'
 epub_publisher = u'Alexandre Cassen and Contributors'
-epub_copyright = u'%s, Alexandre Cassen' % time.strftime('%Y')
+epub_copyright = f"{time.strftime('%Y')}, Alexandre Cassen"
 
 # The basename for the epub file. It defaults to the project name.
 #epub_basename = u'Keepalived'
