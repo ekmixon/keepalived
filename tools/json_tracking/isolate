@@ -57,26 +57,23 @@ def main(args):
     # No specification of count or instances: we impact everything
     if args.count == 0 and args.instances == 0:
         for instance in keepalived_data:
-            print(action + " offset for instance " + instance["data"]["iname"])
+            print(f"{action} offset for instance " + instance["data"]["iname"])
             if (updateOffset(instance["data"]["iname"], offset) == 1):
                 time.sleep(offset_delay)
 
-    # Here we impact a certain count of instances
     elif args.count != 0:
         done = 0
         for instance in partial_list:
             if (updateOffset(instance["data"]["iname"], offset) == 1):
-                print(action + " offset for instance " + instance["data"]["iname"])
+                print(f"{action} offset for instance " + instance["data"]["iname"])
                 done += 1
                 if done >= args.count:
                     break
                 time.sleep(offset_delay)
 
-    # Here we impact specific instances. There is no check that this instance actually exists.
-    # It may be populated in the future
-    elif args.instances != 0:
+    else:
         for instance in args.instances:
-            print(action + " offset for instance " + str(instance))
+            print(f"{action} offset for instance {str(instance)}")
             if (updateOffset(str(instance), offset) == 1):
                 time.sleep(offset_delay)
 
@@ -94,19 +91,19 @@ def getFreshData():
 
 
 def getMasters(keepalived_data):
-    masters = []
-    for instance in keepalived_data:
-        if instance["data"]["state"] == 2:
-            masters.append(instance)
-    return masters
+    return [
+        instance
+        for instance in keepalived_data
+        if instance["data"]["state"] == 2
+    ]
 
 
 def getSlaves(keepalived_data):
-    slaves = []
-    for instance in keepalived_data:
-        if instance["data"]["state"] == 1:
-            slaves.append(instance)
-    return slaves
+    return [
+        instance
+        for instance in keepalived_data
+        if instance["data"]["state"] == 1
+    ]
 
 
 def updateOffset(instance, offset):
@@ -117,22 +114,9 @@ def updateOffset(instance, offset):
         offset_cur = 0
 
     try:
-        if int(offset_cur) == int(offset):
-            # Notify that we did not change anything
-            to_return = 0
-
-        else:
-            # Notify that we changed something
-            to_return = 1
-    # Value does not exist in json file
+        to_return = 0 if offset_cur == int(offset) else 1
     except Exception:
-        if int(offset) == 0:
-            # Notify that we did not change anything
-            to_return = 0
-        else:
-            # Notify that we changed something
-            to_return = 1
-
+        to_return = 0 if int(offset) == 0 else 1
     if to_return == 1:
         with open(keepalived_offset_folder + str(instance), "w") as f:
             f.write(str(offset))
@@ -147,9 +131,14 @@ def checkStatus():
         master_count = len(getMasters(keepalived_data))
         slave_count = len(getSlaves(keepalived_data))
         cprint(
-               "Instances: " + str(instance_count) + ", Masters: "
-               + str(master_count) + ", Slaves: " + str(slave_count), 'green'
+            (
+                (f"Instances: {instance_count}, Masters: " + str(master_count))
+                + ", Slaves: "
+            )
+            + str(slave_count),
+            'green',
         )
+
         time.sleep(check_delay)
 
 

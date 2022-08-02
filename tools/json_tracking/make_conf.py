@@ -43,8 +43,8 @@ class Vlan:
 
 vlans = []
 for vlan_id in range(first_vlan, last_vlan + 1):
-    ip4addr = "10.0." + str(vlan_id) + ".254"
-    ip4net = "10.0." + str(vlan_id) + ".0/24"
+    ip4addr = f"10.0.{str(vlan_id)}.254"
+    ip4net = f"10.0.{str(vlan_id)}.0/24"
     ip6addr = "fd00:42:ffff:" + format(vlan_id, '02x') + ":ff:ff:ff:ff/64"
     new_vlan = Vlan(vlan_id, ip4addr, ip4net, ip6addr)
     vlans.append(new_vlan)
@@ -57,6 +57,5 @@ vrrpconf = templateEnv.get_template('template_vrrp_instance').render(
                 interface=interface
                 ) + "\n"
 
-output_file = open(output_file, "w")
-output_file.write(vrrpconf)
-output_file.close()
+with open(output_file, "w") as output_file:
+    output_file.write(vrrpconf)

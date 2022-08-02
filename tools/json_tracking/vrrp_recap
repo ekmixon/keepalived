@@ -49,11 +49,9 @@ for instance in keepalived_data:
     else:
         instance["data"]["state_cleartext"] = "Fault"
 
-    unicast_vips = []
-    for vip in instance["data"]["vips"]:
-        # We do not display link-local addresses as they are usually not relevant
-        if not vip.startswith("fe80"):
-            unicast_vips.append(vip)
+    unicast_vips = [
+        vip for vip in instance["data"]["vips"] if not vip.startswith("fe80")
+    ]
 
     data_table.add_row([
                         int(instance["data"]["iname"]), instance["data"]["vmac_ifname"],
